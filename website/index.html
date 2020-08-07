@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>zookeeper monitor data</title>
+    <link rel="stylesheet" href="css/Jingle.css">
+</head>
+<body>
+    <div id="aside-container">
+    </div>
+    <div id="section_container">
+        <section id="index_section" class="active">
+            <header>
+                <div class="title">Zookeeper Monitor</div>
+            </header>
+            <article class="active" data-scroll="true">
+                <div style="padding: 10px 0 20px">
+
+                    <div style="padding: 0 10px 10px 10px;">
+                        选中日期为：<span class="bold" style="padding-right: 20px;" id="date_selected"></span><button class="button" id="date_pickup_button">选择</button>
+                    </div>
+                    <ul class="list inset">
+                        <li>
+                            <div>发包量</div>
+                            <canvas id="send_data"></canvas>
+                        </li>
+                        <li>
+                            <div>收包量</div>
+                            <canvas id="receive_data"></canvas>
+                        </li>
+                        <li>
+                            <div>最大延迟</div>
+                            <canvas id="max_latency"></canvas>
+                        </li>
+                        <li>
+                            <div>平均延迟</div>
+                            <canvas id="avg_latency"></canvas>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+    </div>
+
+    <script type="text/javascript" src="lib/zepto.js"></script>
+    <script type="text/javascript" src="lib/iscroll.js"></script>
+    <script type="text/javascript" src="lib/template.min.js"></script>
+    <script type="text/javascript" src="lib/Jingle.debug.js"></script>
+    <script type="text/javascript" src="lib/JChart.debug.js"></script>
+
+    <script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>

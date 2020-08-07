@@ -84,7 +84,9 @@ class Worker(threading.Thread):
             _ret = _sock.recv(10240)
             _sock.close()
         except TimeoutError as e:
-            logging.error("%s send %s error: %s", self, msg, e)
+            logging.error("%s send %s TimeoutError: %s", self, msg, e)
+        except ConnectionResetError as e:
+            logging.error("%s send %s ConnectionResetError: %s", self, msg, e)
         return _ret.decode("utf-8")
 
     def save_data(self, _json):
@@ -92,9 +94,9 @@ class Worker(threading.Thread):
         if not os.path.exists(_data_dir):
             os.mkdir(_data_dir)
         _datetime = datetime.datetime.now()
-        _date = _datetime.strftime("%Y%d%m")
+        _date = _datetime.strftime("%Y-%m-%d")
         _file_path = "%s/%s.txt" % (_data_dir, _date)
-        _json['dt'] = _datetime.strftime("%Y-%d-%m %H:%M")
+        _json['dt'] = _datetime.strftime("%H:%M")
         _json['host'] = self.host
         _json['port'] = self.port
         with open(_file_path, "a") as f:
