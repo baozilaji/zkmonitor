@@ -3,7 +3,6 @@ from flask_cors import *
 import logging
 from optparse import OptionParser
 import os
-import json
 
 parser = OptionParser()
 parser.add_option("-d", "--data", dest="data",
@@ -36,14 +35,21 @@ def server_list():
     return get_server_list()
 
 
-@app.route("/data/<server_name>")
-def daily_data(server_name):
+def get_data_file(server_name, dt):
+    return "%s/%s/%s.txt" % (options.data, server_name, dt)
+
+
+@app.route("/data/<server_name>/<dt>")
+def daily_data(server_name, dt):
     _ret = {
         "data": {
 
         }
     }
-    return json.dumps(_ret)
+    if os.path.isfile(get_data_file(server_name, dt)):
+        with open(get_data_file(server_name, dt), "r") as _file:
+            print(_file)
+    return jsonify(_ret)
 
 
 if __name__ == "__main__":

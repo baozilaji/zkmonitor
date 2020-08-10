@@ -5,8 +5,20 @@ $(function(){
     let DATE_SELECTED = getDateBefore(0, "-")
 
     function getServerData(){
+        J.showMask();
         $.ajax({
-
+            url: ZK_MONITOR_DATA_API_URL+"/data/"+SERVER_SELECTED+"/"+DATE_SELECTED,
+            type: "GET",
+            dataType: "json",
+            success: function(data){
+                console.log(data)
+            },
+            error: function(data){
+                J.showToast("获取服务数据失败.")
+            },
+            complete: function(){
+                J.hideMask()
+            }
         })
     }
 
@@ -66,8 +78,8 @@ $(function(){
                 new J.Calendar('#popup_calendar',{
                     date : new Date(DATE_SELECTED),
                     onSelect:function(date){
-                        selectedDate(date)
                         J.closePopup();
+                        selectedDate(date)
                     }
                 });
             }
@@ -79,7 +91,6 @@ $(function(){
         $.ajax({
             type: "GET",
             dataType: "json",
-            timeout: 0,
             url: ZK_MONITOR_DATA_API_URL+"/server_list",
             success: function(data){
                 if(data.data && data.data.length<=0){

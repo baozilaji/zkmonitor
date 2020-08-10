@@ -81,13 +81,15 @@ class Worker(threading.Thread):
             _sock = socket.socket()
             _sock.connect((self.host, int(self.port)))
             _sock.send((msg+"\n").encode("utf-8"))
-            _ret = _sock.recv(10240)
+            _ret = _sock.recv(10240).decode("utf-8")
             _sock.close()
         except TimeoutError as e:
             logging.error("%s send %s TimeoutError: %s", self, msg, e)
         except ConnectionResetError as e:
             logging.error("%s send %s ConnectionResetError: %s", self, msg, e)
-        return _ret.decode("utf-8")
+        except Exception as e:
+            logging.error("%s send %s Exception: %s", self, msg, e)
+        return _ret
 
     def save_data(self, _json):
         _data_dir = "%s/%s_%s" % (options.data, self.host, self.port)
