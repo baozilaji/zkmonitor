@@ -4,6 +4,48 @@ $(function(){
     let SERVER_SELECTED = "";
     let DATE_SELECTED = getDateBefore(0, "-")
 
+    function draw(_data, _type, _el_id){
+        let data = {
+            "labels": _data.labels,
+            "datasets": []
+        }
+        let _today = {
+            'name': "今日数据",
+            'data': []
+        }
+        _data["keys"].forEach(function(_key){
+            _today['data'].push(_data["all_data"][_key]?_data["all_data"][_key][_type]:0);
+        });
+        data["datasets"].push(_today)
+        let line = new JChart.Line(data, {
+           id: _el_id,
+           datasetShowNumber: 10,
+        });
+        line.draw();
+    }
+    function drawReceive(_data){
+        draw(_data, "receive", "receive_data")
+    }
+
+    function drawSend(_data){
+        draw(_data, "send", "send_data")
+    }
+
+    function drawMaxLatency(_data){
+        draw(_data, "max", "max_latency")
+    }
+
+    function drawAvgLatency(_data){
+        draw(_data, "avg", "avg_latency")
+    }
+
+    function drawCanvas(_data){
+        drawSend(_data)
+        drawReceive(_data)
+        drawMaxLatency(_data)
+        drawAvgLatency(_data)
+    }
+
     function getServerData(){
         J.showMask();
         $.ajax({
@@ -11,7 +53,8 @@ $(function(){
             type: "GET",
             dataType: "json",
             success: function(data){
-                console.log(data)
+                console.log(data.data)
+                drawCanvas(data.data)
             },
             error: function(data){
                 J.showToast("获取服务数据失败.")
