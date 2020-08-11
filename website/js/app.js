@@ -10,8 +10,11 @@ $(function(){
             "datasets": []
         }
         let _today = {
-            'name': "今日数据",
-            'data': []
+            name: "今日数据",
+            color : "#a6d854",
+            pointColor : "#95A5A6",
+            pointBorderColor : "#fff",
+            data: []
         }
         _data["keys"].forEach(function(_key){
             _today['data'].push(_data["all_data"][_key]?_data["all_data"][_key][_type]:0);
@@ -40,10 +43,12 @@ $(function(){
     }
 
     function drawCanvas(_data){
-        drawSend(_data)
-        drawReceive(_data)
-        drawMaxLatency(_data)
-        drawAvgLatency(_data)
+        if(_data && _data['all_data']&&Object.keys(_data['all_data']).length>0){
+            drawSend(_data)
+            drawReceive(_data)
+            drawMaxLatency(_data)
+            drawAvgLatency(_data)
+        }
     }
 
     function getServerData(){

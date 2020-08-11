@@ -4,6 +4,9 @@ import logging
 from optparse import OptionParser
 import os
 import json
+import datetime
+
+_DISPLAY_LAST_MINUTE = 15
 
 parser = OptionParser()
 parser.add_option("-d", "--data", dest="data",
@@ -31,15 +34,22 @@ def get_display(_value):
         return str(_value)
 
 
-for i in range(0, 24*60):
-    _hour = int(i / 60)
-    _min = i % 60
-    _key = "%s:%s" % (get_display(_hour), get_display(_min))
-    _date_keys.append(_key)
-    if i % 5 == 0:
-        _date_label.append(_key)
-    else:
-        _date_label.append("")
+def calc_keys_labels():
+    global _date_keys
+    global _date_label
+    _date_keys = []
+    _date_label = []
+    _now = datetime.datetime.now()
+    _minutes = _now.hour*60+_now.minute
+    for _i in range(_minutes - _DISPLAY_LAST_MINUTE, _minutes):
+        _hour = int(_i / 60)
+        _min = _i % 60
+        _key = "%s:%s" % (get_display(_hour), get_display(_min))
+        _date_keys.append(_key)
+        if _i % 5 == 0:
+            _date_label.append(_key)
+        else:
+            _date_label.append("")
 
 
 app = Flask(__name__)
@@ -70,6 +80,7 @@ def get_data_file(server_name, dt):
 
 @app.route("/data/<server_name>/<dt>")
 def daily_data(server_name, dt):
+    calc_keys_labels()
     _ret = {
         "data": {
             "labels": _date_label,
@@ -82,7 +93,8 @@ def daily_data(server_name, dt):
             _lines = _file.readlines()
             for _line in _lines:
                 _json = json.loads(_line)
-                _ret['data']['all_data'][_json['dt']] = _json
+                if _json['dt'] in _date_keys:
+                    _ret['data']['all_data'][_json['dt']] = _json
     return jsonify(_ret)
 
 
