@@ -5,8 +5,10 @@ $(function(){
     let DATE_SELECTED = getDateBefore(0, "-")
 
     function draw(_data, _type, _el_id){
+        let _parent = $("#"+_el_id).parent();
+        $("#"+_el_id).attr("width", _parent.width())
         let data = {
-            "labels": _data.labels,
+            "labels": _data.labels.slice(),
             "datasets": []
         }
         let _today = {
@@ -16,13 +18,18 @@ $(function(){
             pointBorderColor : "#fff",
             data: []
         }
+        let _first = true
         _data["keys"].forEach(function(_key){
-            _today['data'].push(_data["all_data"][_key]?_data["all_data"][_key][_type]:0);
+            let _value = _data["all_data"][_key]?_data["all_data"][_key][_type]:0;
+            if(_first) {
+                _value += 1;
+                _first = false
+            }
+            _today['data'].push(_value);
         });
         data["datasets"].push(_today)
         let line = new JChart.Line(data, {
            id: _el_id,
-           datasetShowNumber: 10,
         });
         line.draw();
     }
@@ -42,12 +49,22 @@ $(function(){
         draw(_data, "avg", "avg_latency")
     }
 
+    function drawOpenFile(_data){
+        draw(_data,"open_file", "open_file")
+    }
+
+    function drawNodeCount(_data){
+        draw(_data, "znode", "z_node")
+    }
+
     function drawCanvas(_data){
         if(_data && _data['all_data']&&Object.keys(_data['all_data']).length>0){
             drawSend(_data)
             drawReceive(_data)
             drawMaxLatency(_data)
             drawAvgLatency(_data)
+            drawOpenFile(_data)
+            drawNodeCount(_data)
         }
     }
 
